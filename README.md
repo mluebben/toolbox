@@ -1,4 +1,6 @@
-# tools
+# Tools
+
+A serverless webapp to generate hashes.
 
 ## Project setup
 ```
