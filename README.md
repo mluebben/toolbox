@@ -1,4 +1,4 @@
-# Tools
+# Toolbox
 
 A serverless webapp to generate hashes.
 
