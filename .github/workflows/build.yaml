@@ -1,0 +1,37 @@
+name: Toolbox CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install zip
+      uses: montudor/action-zip@v1
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+    - name: Install dependencies
+      run: npm install
+    - name: Build application
+      run: npm run build
+    - name: Bundle application
+      run: zip -q -r ../release.zip .
+      working-directory: dist
+    - name: Setup ssh
+      uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
+      with:
+        ORIGIN: ${{ secrets.SSH_HOST }}
+        SSHKEY: ${{ secrets.SSH_KEY }}
+        NAME: production
+        PORT: ${{ secrets.SSH_PORT }}
+        USER: ${{ secrets.SSH_USER }}
+    - name: Deploy application
+      run: cat release.zip | ssh production /root/deploy -c toolbox -i -
